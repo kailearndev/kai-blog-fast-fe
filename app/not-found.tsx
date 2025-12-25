@@ -8,12 +8,20 @@ export default function NotFound() {
         Rất tiếc, trang bạn đang tìm kiếm không tồn tại. Vui lòng kiểm tra lại
         đường dẫn hoặc quay lại trang chủ.
       </p>
-      <Link
-        href="/"
-        className="text-white hover:underline p-2 bg-blue-400 rounded-2xl mt-4"
-      >
-        Quay lại trang chủ
-      </Link>
+      <div className="flex gap-4">
+        <Link
+          href="/"
+          className="text-white hover:underline p-2 bg-blue-400 rounded-2xl mt-4"
+        >
+          Về trang chủ
+        </Link>
+        {/* <Link
+        onNavigate={(e) => e.}
+          className="text-black hover:underline p-2 bg-amber-100 rounded-2xl mt-4"
+        >
+          Quay lại trang trước
+        </Link> */}
+      </div>
     </section>
   );
 }

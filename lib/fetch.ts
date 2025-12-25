@@ -1,3 +1,4 @@
+import { get } from "http";
 import { ApiError } from "next/dist/server/api-utils";
 
 export class APIError extends Error {
@@ -34,13 +35,17 @@ async function fetcher<T>(
 
   try {
     const response = await fetch(fullUrl, config);
+    console.log(fullUrl);
+
     let data;
-    const contentType = response.headers.get("Content-Type");
+    const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
       data = await response.json();
     } else {
       data = await response.text();
     }
+    console.log(data);
+
     if (!response.ok) {
       throw new APIError(
         data?.message || "An error occurred while fetching the data.",
@@ -56,4 +61,32 @@ async function fetcher<T>(
     throw new ApiError(500, "Network error or invalid JSON response");
   }
 }
-export default fetcher;
+
+export const api = {
+  get: <T>(endPoint: string, headers?: HeadersInit): Promise<T> => {
+    return fetcher<T>(endPoint, {
+      method: "GET",
+      headers,
+    });
+  },
+  post: <T>(endPoint: string, body: any, headers?: HeadersInit): Promise<T> => {
+    return fetcher<T>(endPoint, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+    });
+  },
+  put: <T>(endPoint: string, body: any, headers?: HeadersInit): Promise<T> => {
+    return fetcher<T>(endPoint, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify(body),
+    });
+  },
+  delete: <T>(endPoint: string, headers?: HeadersInit): Promise<T> => {
+    return fetcher<T>(endPoint, {
+      method: "DELETE",
+      headers,
+    });
+  },
+};

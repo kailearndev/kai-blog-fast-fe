@@ -1,5 +1,8 @@
 import { Metadata } from "next";
-import BlogContent from "./_components/blog-content";
+
+import { PostService } from "@/services/post";
+import PostContent from "./_components/blog-content";
+import { Suspense } from "react";
 
 export const meta: Metadata = {
   title: "Kai Dev Blog - About",
@@ -8,9 +11,13 @@ export const meta: Metadata = {
 };
 
 export default async function AboutPage() {
+  const posts = await PostService.getPosts();
+  if (!posts) {
+    return <div>No blog posts available.</div>;
+  }
   return (
     <section>
-      <BlogContent />
+      <PostContent data={posts} />
     </section>
   );
 }
