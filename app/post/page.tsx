@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 import { PostService } from "@/services/post";
-import PostContent from "./_components/blog-content";
+import PostContent from "./_components/post-content";
 import { Suspense } from "react";
 
 export const meta: Metadata = {

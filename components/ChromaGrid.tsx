@@ -1,16 +1,18 @@
 "use client";
 import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
-
+import Image from "next/image";
+import parse from "html-react-parser";
+import { useRouter } from "next/navigation";
 export interface ChromaItem {
-  image: string;
+  thumbnail: string;
   title: string;
-  subtitle: React.ReactNode;
+  content: string;
   handle?: string;
   location?: string;
   borderColor?: string;
   gradient?: string;
-  url?: string;
+  slug?: string;
 }
 
 export interface ChromaGridProps {
@@ -37,61 +39,61 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
   const setX = useRef<SetterFn | null>(null);
   const setY = useRef<SetterFn | null>(null);
   const pos = useRef({ x: 0, y: 0 });
-
+  const navigate = useRouter();
   const demo: ChromaItem[] = [
     {
-      image: "https://i.pravatar.cc/300?img=8",
+      thumbnail: "https://i.pravatar.cc/300?img=8",
       title: "Alex Rivera",
-      subtitle: "Full Stack Developer",
+      content: "Full Stack Developer",
       handle: "@alexrivera",
       borderColor: "#4F46E5",
       gradient: "linear-gradient(145deg,#4F46E5,#000)",
-      url: "https://github.com/",
+      slug: "https://github.com/",
     },
     {
-      image: "https://i.pravatar.cc/300?img=11",
+      thumbnail: "https://i.pravatar.cc/300?img=11",
       title: "Jordan Chen",
-      subtitle: "DevOps Engineer",
+      content: "DevOps Engineer",
       handle: "@jordanchen",
       borderColor: "#10B981",
       gradient: "linear-gradient(210deg,#10B981,#000)",
-      url: "https://linkedin.com/in/",
+      slug: "https://linkedin.com/in/",
     },
     {
-      image: "https://i.pravatar.cc/300?img=3",
+      thumbnail: "https://i.pravatar.cc/300?img=3",
       title: "Morgan Blake",
-      subtitle: "UI/UX Designer",
+      content: "UI/UX Designer",
       handle: "@morganblake",
       borderColor: "#F59E0B",
       gradient: "linear-gradient(165deg,#F59E0B,#000)",
-      url: "https://dribbble.com/",
+      slug: "https://dribbble.com/",
     },
     {
-      image: "https://i.pravatar.cc/300?img=16",
+      thumbnail: "https://i.pravatar.cc/300?img=16",
       title: "Casey Park",
-      subtitle: "Data Scientist",
+      content: "Data Scientist",
       handle: "@caseypark",
       borderColor: "#EF4444",
       gradient: "linear-gradient(195deg,#EF4444,#000)",
-      url: "https://kaggle.com/",
+      slug: "https://kaggle.com/",
     },
     {
-      image: "https://i.pravatar.cc/300?img=25",
+      thumbnail: "https://i.pravatar.cc/300?img=25",
       title: "Sam Kim",
-      subtitle: "Mobile Developer",
+      content: "Mobile Developer",
       handle: "@thesamkim",
       borderColor: "#8B5CF6",
       gradient: "linear-gradient(225deg,#8B5CF6,#000)",
-      url: "https://github.com/",
+      slug: "https://github.com/",
     },
     {
-      image: "https://i.pravatar.cc/300?img=60",
+      thumbnail: "https://i.pravatar.cc/300?img=60",
       title: "Tyler Rodriguez",
-      subtitle: "Cloud Architect",
+      content: "Cloud Architect",
       handle: "@tylerrod",
       borderColor: "#06B6D4",
       gradient: "linear-gradient(135deg,#06B6D4,#000)",
-      url: "https://aws.amazon.com/",
+      slug: "https://aws.amazon.com/",
     },
   ];
 
@@ -136,8 +138,10 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
     });
   };
 
-  const handleCardClick = (url?: string) => {
-    if (url) window.open(url, "_blank", "noopener,noreferrer");
+  const handleCardClick = (slug?: string) => {
+    if (slug) {
+      navigate.push(`/post/${slug}`);
+    }
   };
 
   const handleCardMove: React.MouseEventHandler<HTMLElement> = (e) => {
@@ -165,7 +169,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
         <article
           key={i}
           onMouseMove={handleCardMove}
-          onClick={() => handleCardClick(c.url)}
+          onClick={() => handleCardClick(c.slug)}
           className="group relative flex flex-col w-[300px] rounded-[20px] overflow-hidden border-2 border-transparent transition-colors duration-300 cursor-pointer"
           style={
             {
@@ -182,34 +186,37 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 "radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 70%)",
             }}
           />
-          <div className="relative z-10 flex-1 p-[10px] box-border">
-            <img
-              src={c.image}
-              alt={c.title}
-              loading="lazy"
-              className="w-full h-full object-cover rounded-[10px]"
-            />
+          <div className="relative z-10 flex-1 p-[10px] box-border w-full h-0">
+            <div className="relative w-full aspect-square p-[10px]">
+              <Image
+                src={c.thumbnail}
+                alt={c.title}
+                priority
+                fill // Tự động absolute, width 100%, height 100%
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover rounded-[10px]"
+              />
+            </div>
           </div>
           <footer className="relative z-10 p-3 text-white font-sans grid grid-cols-[1fr_auto] gap-x-3 gap-y-1">
-            <h3 className="m-0 text-[1.05rem] font-semibold">{c.title}</h3>
-            {c.handle && (
-              <span className="text-[0.95rem] opacity-80 text-right">
-                {c.handle}
-              </span>
-            )}
-            <div className="m-0 text-[0.85rem] opacity-85">{c.subtitle}</div>
-            {c.location && (
-              <span className="text-[0.85rem] opacity-85 text-right">
-                {c.location}
-              </span>
-            )}
+            <div className="flex flex-col">
+              <h3 className="m-0 text-[1.05rem] font-semibold">{c.title}</h3>
+              {c.handle && (
+                <span className="text-[0.95rem] opacity-80 text-right">
+                  {c.handle}
+                </span>
+              )}
+
+              <div className="m-0 text-[0.85rem] opacity-85 line-clamp-3">
+                {parse(c.content.slice(0, 100) + "...")}
+              </div>
+            </div>
           </footer>
         </article>
       ))}
       <div
         className="absolute inset-0 pointer-events-none z-30"
         style={{
-          backdropFilter: "grayscale(1) brightness(0.78)",
           WebkitBackdropFilter: "grayscale(1) brightness(0.78)",
           background: "rgba(0,0,0,0.001)",
           maskImage:
@@ -222,7 +229,6 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
         ref={fadeRef}
         className="absolute inset-0 pointer-events-none transition-opacity duration-[250ms] z-40"
         style={{
-          backdropFilter: "grayscale(1) brightness(0.78)",
           WebkitBackdropFilter: "grayscale(1) brightness(0.78)",
           background: "rgba(0,0,0,0.001)",
           maskImage:

@@ -25,9 +25,9 @@ export default function Header() {
       hoverStyles: { bgColor: "#f59e0b", textColor: "#ffffff" },
     },
     {
-      label: "blog",
-      href: "/blog",
-      ariaLabel: "Blog",
+      label: "post",
+      href: "/post",
+      ariaLabel: "Post",
       rotation: 8,
       hoverStyles: { bgColor: "#ef4444", textColor: "#ffffff" },
     },
