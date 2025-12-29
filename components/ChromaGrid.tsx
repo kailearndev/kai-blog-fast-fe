@@ -1,6 +1,5 @@
 "use client";
 import { gsap } from "gsap";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 export interface ChromaItem {
@@ -217,18 +216,10 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 "radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 70%)",
             }}
           />
-          <div className="relative z-10 flex-1 p-4 box-border w-full h-0">
-            <div className="relative w-full aspect-square">
-              <Image
-                src={c.thumbnail || "https://i.pravatar.cc/300"}
-                alt={c.title}
-                priority
-                fill // Tự động absolute, width 100%, height 100%
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-cover rounded-[10px]"
-              />
-            </div>
-          </div>
+          <div
+            className="bg-cover bg-top h-62" // Các class tĩnh giữ nguyên
+            style={{ backgroundImage: `url(${c.thumbnail})` }} // Dynamic value đưa vào đây
+          ></div>
           {/* 1. Container cha: Flex Column + h-full */}
           <footer className="flex flex-col h-full p-3 text-white gap-2">
             {/* --- PHẦN 1: TITLE (Chiếm 1/3) --- */}

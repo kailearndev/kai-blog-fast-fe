@@ -7,10 +7,11 @@ export default function LayoutProvider({
 }) {
   return (
     <section className="relative flex flex-col">
-      <header className=" fixed left-0 w-full z-9999 mt-4  overflow-hidden  ">
+      <div className="bottom-10 right-10 fixed z-50">
         <Header />
-      </header>
-      <main className="grow w-full  max-w-7xl mx-auto px-4 pt-24 pb-10">
+      </div>
+
+      <main className="grow w-full  max-w-7xl mx-auto p-4  pb-10">
         {children}
       </main>
     </section>

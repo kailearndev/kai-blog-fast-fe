@@ -2,6 +2,7 @@
 
 import LogoLoop from "@/components/LogoLoop";
 import ScrollReveal from "@/components/ScrollReveal";
+import Image from "next/image";
 import {
   SiFastapi,
   SiNextdotjs,
@@ -36,10 +37,21 @@ export default function ScrollContent() {
 
   return (
     <div className=" ">
-      <h1 className="text-3xl font-bold ">
-        Chào mừng các thần dân đến với blog của Kai Dev!
-      </h1>
-
+      <div className="text-center">
+        <h1 className="text-3xl font-bold ">
+          Chào mừng các thần dân đến với blog của Kai Dev!
+        </h1>
+        <div className="flex justify-center">
+          <Image
+            src={
+              "https://media.tenor.com/fli5xzAP4boAAAAM/familyguy-quagmire.gif"
+            }
+            alt="Family Guy Quagmire"
+            width={200}
+            height={200}
+          />
+        </div>
+      </div>
       <ScrollReveal
         textClassName=""
         baseOpacity={0}

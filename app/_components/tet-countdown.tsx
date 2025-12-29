@@ -1,7 +1,9 @@
 "use client";
 
-import Counter from "@/components/Counter";
+import { motion } from "motion/react";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import Counter from "./counter";
 
 interface TimeLeft {
   days: number;
@@ -54,17 +56,67 @@ export default function TetCountdown() {
 
   // Nếu chưa mount xong, return null để tránh lỗi hydration
   if (!isMounted) return null;
+  const formatUnit = (unit: string) => {
+    switch (unit) {
+      case "days":
+        return "Ngày";
+      case "hours":
+        return "Giờ";
+      case "minutes":
+        return "Phút";
+      case "seconds":
+        return "Giây";
+      default:
+        return unit;
+    }
+  };
 
   return (
-    <div className="flex z-0 py-4 rounded-xl  items-center">
-      <Counter
-        label="Ngày"
-        value={timeLeft.days}
-        digitStyle={{ color: "red" }}
-      />
-      <Counter label="Giờ" value={timeLeft.hours} />
-      <Counter label="Phút" value={timeLeft.minutes} />
-      <Counter label="Giây" value={timeLeft.seconds} />
+    <div className="flex z-0 py-4 rounded-xl  items-center flex-col  px-6 md:px-12 lg:px-16">
+      <div className="flex flex-row justify-center">
+        {Object.entries(timeLeft).map(([unit, value]) => (
+          <div key={unit} className="flex flex-col items-center mx-2">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.2 + Object.keys(timeLeft).indexOf(unit) * 0.1,
+              }}
+              className="mt-2 text-center text-white"
+            >
+              {formatUnit(unit)}
+            </motion.div>
+            {/* Component Counter đã tích hợp Motion */}
+            <Counter
+              value={value as number}
+              unit={formatUnit(unit)}
+              // Bạn có thể bỏ containerStyle nếu đã style cứng trong component
+              // Hoặc truyền vào nếu cần đè style
+            />
+          </div>
+        ))}
+      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="flex flex-row justify-center mt-2"
+      >
+        Là tới năm mới {2026} - Xuân Bính Thìn
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        whileHover={{
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          scale: 1.05,
+        }}
+        className="mt-4 cursor-pointer px-4 py-2 border border-white rounded-lg text-white font-medium hover:bg-white/10 transition"
+      >
+        <Link href="/post">Đi đến blog</Link>
+      </motion.div>
     </div>
   );
 }

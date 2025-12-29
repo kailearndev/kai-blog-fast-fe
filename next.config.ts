@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { hostname: "jhygflbinqdrcnqyxvvn.supabase.co" },
       { hostname: "i.pravatar.cc" },
+      { hostname: "media.tenor.com" },
     ],
   },
   /* config options here */
