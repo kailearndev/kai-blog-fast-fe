@@ -1,18 +1,18 @@
 "use client";
-import React, { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import Image from "next/image";
-import parse from "html-react-parser";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useRef } from "react";
 export interface ChromaItem {
   thumbnail: string;
   title: string;
   content: string;
-  handle?: string;
+  tags?: { id: string; name: string }[];
   location?: string;
   borderColor?: string;
   gradient?: string;
   slug?: string;
+  summary?: string;
 }
 
 export interface ChromaGridProps {
@@ -40,12 +40,26 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
   const setY = useRef<SetterFn | null>(null);
   const pos = useRef({ x: 0, y: 0 });
   const navigate = useRouter();
+
+  const gradientList = [
+    "linear-gradient(145deg,#4F46E5,#000)",
+    "linear-gradient(210deg,#10B981,#000)",
+    "linear-gradient(165deg,#F59E0B,#000)",
+    "linear-gradient(195deg,#EF4444,#000)",
+    "linear-gradient(225deg,#8B5CF6,#000)",
+    "linear-gradient(135deg,#06B6D4,#000)",
+  ];
+
   const demo: ChromaItem[] = [
     {
       thumbnail: "https://i.pravatar.cc/300?img=8",
       title: "Alex Rivera",
       content: "Full Stack Developer",
-      handle: "@alexrivera",
+      tags: [
+        { id: "1", name: "Mobile" },
+        { id: "2", name: "Developer" },
+      ],
+
       borderColor: "#4F46E5",
       gradient: "linear-gradient(145deg,#4F46E5,#000)",
       slug: "https://github.com/",
@@ -54,7 +68,11 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
       thumbnail: "https://i.pravatar.cc/300?img=11",
       title: "Jordan Chen",
       content: "DevOps Engineer",
-      handle: "@jordanchen",
+      tags: [
+        { id: "1", name: "Mobile" },
+        { id: "2", name: "Developer" },
+      ],
+
       borderColor: "#10B981",
       gradient: "linear-gradient(210deg,#10B981,#000)",
       slug: "https://linkedin.com/in/",
@@ -63,7 +81,10 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
       thumbnail: "https://i.pravatar.cc/300?img=3",
       title: "Morgan Blake",
       content: "UI/UX Designer",
-      handle: "@morganblake",
+      tags: [
+        { id: "1", name: "Mobile" },
+        { id: "2", name: "Developer" },
+      ],
       borderColor: "#F59E0B",
       gradient: "linear-gradient(165deg,#F59E0B,#000)",
       slug: "https://dribbble.com/",
@@ -72,7 +93,11 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
       thumbnail: "https://i.pravatar.cc/300?img=16",
       title: "Casey Park",
       content: "Data Scientist",
-      handle: "@caseypark",
+      tags: [
+        { id: "1", name: "Mobile" },
+        { id: "2", name: "Developer" },
+      ],
+
       borderColor: "#EF4444",
       gradient: "linear-gradient(195deg,#EF4444,#000)",
       slug: "https://kaggle.com/",
@@ -81,7 +106,10 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
       thumbnail: "https://i.pravatar.cc/300?img=25",
       title: "Sam Kim",
       content: "Mobile Developer",
-      handle: "@thesamkim",
+      tags: [
+        { id: "1", name: "Mobile" },
+        { id: "2", name: "Developer" },
+      ],
       borderColor: "#8B5CF6",
       gradient: "linear-gradient(225deg,#8B5CF6,#000)",
       slug: "https://github.com/",
@@ -90,14 +118,17 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
       thumbnail: "https://i.pravatar.cc/300?img=60",
       title: "Tyler Rodriguez",
       content: "Cloud Architect",
-      handle: "@tylerrod",
+      tags: [
+        { id: "1", name: "Cloud" },
+        { id: "2", name: "Architect" },
+      ],
       borderColor: "#06B6D4",
       gradient: "linear-gradient(135deg,#06B6D4,#000)",
       slug: "https://aws.amazon.com/",
     },
   ];
 
-  const data = items?.length ? items : demo;
+  const data = items && items.length > 0 ? items : demo;
 
   useEffect(() => {
     const el = rootRef.current;
@@ -170,11 +201,11 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
           key={i}
           onMouseMove={handleCardMove}
           onClick={() => handleCardClick(c.slug)}
-          className="group relative flex flex-col w-[300px] rounded-[20px] overflow-hidden border-2 border-transparent transition-colors duration-300 cursor-pointer"
+          className="group relative flex flex-col rounded-xl overflow-hidden border-transparent transition-colors duration-300 cursor-pointer"
           style={
             {
               "--card-border": c.borderColor || "transparent",
-              background: c.gradient,
+              background: gradientList[i % gradientList.length],
               "--spotlight-color": "rgba(255,255,255,0.3)",
             } as React.CSSProperties
           }
@@ -186,10 +217,10 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 "radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 70%)",
             }}
           />
-          <div className="relative z-10 flex-1 p-[10px] box-border w-full h-0">
-            <div className="relative w-full aspect-square p-[10px]">
+          <div className="relative z-10 flex-1 p-4 box-border w-full h-0">
+            <div className="relative w-full aspect-square">
               <Image
-                src={c.thumbnail}
+                src={c.thumbnail || "https://i.pravatar.cc/300"}
                 alt={c.title}
                 priority
                 fill // Tự động absolute, width 100%, height 100%
@@ -198,17 +229,36 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
               />
             </div>
           </div>
-          <footer className="relative z-10 p-3 text-white font-sans grid grid-cols-[1fr_auto] gap-x-3 gap-y-1">
-            <div className="flex flex-col">
-              <h3 className="m-0 text-[1.05rem] font-semibold">{c.title}</h3>
-              {c.handle && (
-                <span className="text-[0.95rem] opacity-80 text-right">
-                  {c.handle}
-                </span>
-              )}
+          {/* 1. Container cha: Flex Column + h-full */}
+          <footer className="flex flex-col h-full p-3 text-white gap-2">
+            {/* --- PHẦN 1: TITLE (Chiếm 1/3) --- */}
+            {/* flex-1: tự giãn bằng các anh em khác */}
+            {/* flex + items-center: để căn chữ nằm giữa theo chiều dọc */}
+            <div className="flex-1 flex items-center min-h-0">
+              <h3 className="m-0 text-[1.05rem] font-semibold line-clamp-2">
+                {c.title}
+              </h3>
+            </div>
 
-              <div className="m-0 text-[0.85rem] opacity-85 line-clamp-3">
-                {parse(c.content.slice(0, 100) + "...")}
+            {/* --- PHẦN 2: TAGS (Chiếm 1/3) --- */}
+            <div className="flex-1 flex items-center min-h-0">
+              <div className="flex flex-wrap gap-1">
+                {c.tags &&
+                  c.tags.map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className="text-[0.65rem] opacity-75 px-2 py-1 bg-green-600 rounded-full whitespace-nowrap line-clamp-1"
+                    >
+                      #{tag.name}
+                    </span>
+                  ))}
+              </div>
+            </div>
+
+            {/* --- PHẦN 3: CONTENT (Chiếm 1/3) --- */}
+            <div className="flex-1 flex items-center min-h-10">
+              <div className="text-[0.85rem] opacity-85 line-clamp-2">
+                {c.summary}
               </div>
             </div>
           </footer>

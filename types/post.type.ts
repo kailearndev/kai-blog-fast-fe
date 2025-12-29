@@ -7,4 +7,11 @@ export interface IPost {
   created_at: string;
   updated_at: string;
   thumbnail: string;
+  tags: ITag[];
+  summary: string;
+}
+
+interface ITag {
+  id: string;
+  name: string;
 }
