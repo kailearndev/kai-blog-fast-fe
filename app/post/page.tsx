@@ -4,11 +4,22 @@ import { PostService } from "@/services/post";
 import PostContent from "./_components/post-content";
 
 export const meta: Metadata = {
-  title: "Kai Dev Blog",
-  description: "Hello MY fennnnnnn",
+  title: "Các bài viết ",
+  description: "Nextjs như cớt  =)))))",
+  openGraph: {
+    title: "Các bài viết ",
+    description: "Nextjs như cớt  =)))))",
+    images: [
+      {
+        url: "https://blog.kaidev.space/og-post.jpg",
+        width: 1200,
+        height: 600,
+      },
+    ],
+  },
 };
 
-export default async function AboutPage() {
+export default async function PostPage() {
   const posts = await PostService.getPosts();
 
   if (!posts) {
