@@ -28,7 +28,7 @@ async function fetcher<T>(
   const config: RequestInit = {
     ...options,
     headers,
-    cache: options.cache, // Mặc định không cache để lấy data mới nhất
+    cache: options.cache || "no-cache", // Mặc định không cache để lấy data mới nhất
   };
 
   try {
