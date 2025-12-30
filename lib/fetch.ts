@@ -1,4 +1,3 @@
-import { get } from "http";
 import { ApiError } from "next/dist/server/api-utils";
 
 export class APIError extends Error {
@@ -35,7 +34,6 @@ async function fetcher<T>(
 
   try {
     const response = await fetch(fullUrl, config);
-    console.log(fullUrl);
 
     let data;
     const contentType = response.headers.get("content-type");
@@ -44,7 +42,6 @@ async function fetcher<T>(
     } else {
       data = await response.text();
     }
-    console.log(data);
 
     if (!response.ok) {
       throw new APIError(
