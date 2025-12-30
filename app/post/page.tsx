@@ -4,9 +4,8 @@ import { PostService } from "@/services/post";
 import PostContent from "./_components/post-content";
 
 export const meta: Metadata = {
-  title: "Kai Dev Blog - About",
-  description:
-    "Learn more about Kai Dev and the technologies used in this blog.",
+  title: "Kai Dev Blog",
+  description: "Hello MY fennnnnnn",
 };
 
 export default async function AboutPage() {
