@@ -43,6 +43,8 @@ async function fetcher<T>(
       data = await response.text();
     }
 
+    console.log(data);
+
     if (!response.ok) {
       throw new APIError(
         data?.message || "An error occurred while fetching the data.",

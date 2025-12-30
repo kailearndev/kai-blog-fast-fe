@@ -13,6 +13,7 @@ export const meta: Metadata = {
 
 export default async function AboutPage() {
   const posts = await PostService.getPosts();
+
   if (!posts) {
     return <div>No blog posts available.</div>;
   }
