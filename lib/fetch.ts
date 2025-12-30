@@ -16,7 +16,7 @@ async function fetcher<T>(
   options: RequestInit = {}
 ): Promise<T> {
   // 2. SỬA QUAN TRỌNG: Trỏ thẳng vào Backend thật (Bỏ localhost đi để fix lỗi Network)
-  const baseUrl = "https://be-blog.kaidev.space";
+  const baseUrl = process.env.API_BASE_URL!;
 
   // Logic clean URL giữ nguyên
   const cleanBaseUrl = baseUrl.replace(/\/+$/, "");
