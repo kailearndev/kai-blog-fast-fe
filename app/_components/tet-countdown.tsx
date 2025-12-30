@@ -33,9 +33,6 @@ export default function TetCountdown() {
       const now = new Date().getTime();
       const distance = TET_DATE - now;
 
-      // Debug: Bật F12 tab Console để xem dòng này
-      // console.log("Distance:", distance);
-
       if (distance < 0) {
         clearInterval(interval);
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -105,18 +102,20 @@ export default function TetCountdown() {
       >
         Là tới năm mới {2026} - Xuân Bính Thìn
       </motion.div>
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        whileHover={{
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
-          scale: 1.05,
-        }}
-        className="mt-4 cursor-pointer px-4 py-2 border border-white rounded-lg text-white font-medium hover:bg-white/10 transition"
-      >
-        <Link href="/post">Đi đến blog</Link>
-      </motion.div>
+      <Link href="/post">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          whileHover={{
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            scale: 1.05,
+          }}
+          className="mt-4 cursor-pointer px-4 py-2 border border-white rounded-lg text-white font-medium hover:bg-white/10 transition"
+        >
+          Khám phá blog của kai
+        </motion.div>
+      </Link>
     </div>
   );
 }

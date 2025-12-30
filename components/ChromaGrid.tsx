@@ -217,11 +217,11 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
             }}
           />
           <div
-            className="bg-cover bg-top h-62" // Các class tĩnh giữ nguyên
+            className="bg-cover bg-top h-62 overflow-hidden" // Các class tĩnh giữ nguyên
             style={{ backgroundImage: `url(${c.thumbnail})` }} // Dynamic value đưa vào đây
           ></div>
           {/* 1. Container cha: Flex Column + h-full */}
-          <footer className="flex flex-col h-full p-3 text-white gap-2">
+          <footer className="flex flex-col h-full p-4 text-white gap-2">
             {/* --- PHẦN 1: TITLE (Chiếm 1/3) --- */}
             {/* flex-1: tự giãn bằng các anh em khác */}
             {/* flex + items-center: để căn chữ nằm giữa theo chiều dọc */}

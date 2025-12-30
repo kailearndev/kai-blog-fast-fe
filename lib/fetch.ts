@@ -1,11 +1,10 @@
-import { ApiError } from "next/dist/server/api-utils";
-
 export class APIError extends Error {
   status: number;
   data: any;
 
   constructor(message: string, status: number, data: any) {
     super(message);
+    this.name = "APIError";
     this.status = status;
     this.data = data;
   }
@@ -15,7 +14,7 @@ async function fetcher<T>(
   endPoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const baseUrl = process.env.API_BASE_URL || "http://localhost:3000/api";
+  const baseUrl = process.env.API_BASE_URL! || "http://localhost:3000/api";
   if (!baseUrl) {
     throw new Error("API_BASE_URL is not defined");
   }
@@ -29,7 +28,7 @@ async function fetcher<T>(
   const config: RequestInit = {
     ...options,
     headers,
-    cache: options.cache || "no-store", // Mặc định không cache để lấy data mới nhất
+    cache: options.cache, // Mặc định không cache để lấy data mới nhất
   };
 
   try {
@@ -43,8 +42,6 @@ async function fetcher<T>(
       data = await response.text();
     }
 
-    console.log(data);
-
     if (!response.ok) {
       throw new APIError(
         data?.message || "An error occurred while fetching the data.",
@@ -57,7 +54,7 @@ async function fetcher<T>(
     if (error instanceof APIError) {
       throw error;
     }
-    throw new ApiError(500, "Network error or invalid JSON response");
+    throw new APIError("Network error or invalid JSON response", 500, null);
   }
 }
 
