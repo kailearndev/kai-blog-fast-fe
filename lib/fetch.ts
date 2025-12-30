@@ -1,3 +1,4 @@
+// 1. Giữ nguyên class Error của bạn
 export class APIError extends Error {
   status: number;
   data: any;
@@ -14,22 +15,32 @@ async function fetcher<T>(
   endPoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const baseUrl = process.env.API_BASE_URL! || "http://localhost:3000/api";
-  if (!baseUrl) {
-    throw new Error("API_BASE_URL is not defined");
-  }
+  // 2. SỬA QUAN TRỌNG: Trỏ thẳng vào Backend thật (Bỏ localhost đi để fix lỗi Network)
+  const baseUrl = "https://be-blog.kaidev.space";
+
+  // Logic clean URL giữ nguyên
   const cleanBaseUrl = baseUrl.replace(/\/+$/, "");
   const cleanEndpoint = endPoint.startsWith("/") ? endPoint : `/${endPoint}`;
   const fullUrl = `${cleanBaseUrl}${cleanEndpoint}`;
+
   const headers: HeadersInit = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
   };
+
   const config: RequestInit = {
+    // 3. SỬA QUAN TRỌNG: Mặc định cache 1 tiếng (ISR)
+    // Giúp build thành công ra Static, fix lỗi "Dynamic server usage"
+    next: { revalidate: 3600 },
+
+    // Spread options xuống cuối để cho phép ghi đè từ bên ngoài
     ...options,
+
     headers,
-    cache: options.cache || "no-cache", // Mặc định không cache để lấy data mới nhất
   };
+
+  // Log ra để debug
+  console.log(`🚀 [API] Calling: ${fullUrl}`);
 
   try {
     const response = await fetch(fullUrl, config);
@@ -37,52 +48,63 @@ async function fetcher<T>(
     let data;
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
-      data = await response.json();
+      // Bắt lỗi parse JSON phòng trường hợp Server trả về HTML lỗi
+      try {
+        data = await response.json();
+      } catch (e) {
+        data = null;
+      }
     } else {
       data = await response.text();
     }
 
     if (!response.ok) {
+      // Log lỗi chi tiết từ server
+      console.error("❌ [API ERROR DETAILS]:", data);
       throw new APIError(
-        data?.message || "An error occurred while fetching the data.",
+        data?.message || `Error ${response.status}: ${response.statusText}`,
         response.status,
         data
       );
     }
     return data as T;
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof APIError) {
       throw error;
     }
-    throw new APIError("Network error or invalid JSON response", 500, null);
+    // Log lỗi gốc ra console để biết đường sửa
+    console.error("💀 [FETCH FAILED]:", error);
+
+    throw new APIError(error.message || "Network error", 500, null);
   }
 }
 
+// 4. SỬA QUAN TRỌNG: Cho phép truyền options vào wrapper
 export const api = {
-  get: <T>(endPoint: string, headers?: HeadersInit): Promise<T> => {
+  get: <T>(endPoint: string, options?: RequestInit): Promise<T> => {
     return fetcher<T>(endPoint, {
       method: "GET",
-      headers,
+      ...options, // 👈 Cho phép truyền { next: { revalidate: 0 } } từ page
     });
   },
-  post: <T>(endPoint: string, body: any, headers?: HeadersInit): Promise<T> => {
+  post: <T>(endPoint: string, body: any, options?: RequestInit): Promise<T> => {
     return fetcher<T>(endPoint, {
       method: "POST",
-      headers,
       body: JSON.stringify(body),
+      ...options,
     });
   },
-  put: <T>(endPoint: string, body: any, headers?: HeadersInit): Promise<T> => {
+  put: <T>(endPoint: string, body: any, options?: RequestInit): Promise<T> => {
     return fetcher<T>(endPoint, {
       method: "PUT",
-      headers,
       body: JSON.stringify(body),
+      ...options,
     });
   },
-  delete: <T>(endPoint: string, headers?: HeadersInit): Promise<T> => {
+  delete: <T>(endPoint: string, options?: RequestInit): Promise<T> => {
     return fetcher<T>(endPoint, {
       method: "DELETE",
-      headers,
+      ...options,
     });
   },
 };

@@ -4,6 +4,8 @@ import { IResponse } from "@/types/reponse";
 
 export const PostService = {
   getPosts: async (): Promise<IResponse<IPost[]>> => {
-    return await api.get("/posts");
+    return await api.get("/posts", {
+      next: { revalidate: 120 }, // 2 phút làm mới cache một lần
+    });
   },
 };
